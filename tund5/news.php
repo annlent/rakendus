@@ -21,7 +21,7 @@
 
 
 	
-	$newsHTML = readNews(5);
+	$newsHTML = readNewsPage(5);
 ?>
 <!DOCTYPE html>
 <html lang="et">

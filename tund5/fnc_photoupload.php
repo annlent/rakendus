@@ -60,6 +60,25 @@
 		imagecopyresampled($myNewImage, $src, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
 		return $myNewImage;
 	}
+	// Link image type to correct image loader and saver
+// - makes it easier to add additional types later on
+// - makes the function easier to read
+const IMAGE_HANDLERS = [
+    IMAGETYPE_JPEG => [
+        'load' => 'imagecreatefromjpeg',
+        'save' => 'imagejpeg',
+        'quality' => 100
+    ],
+    IMAGETYPE_PNG => [
+        'load' => 'imagecreatefrompng',
+        'save' => 'imagepng',
+        'quality' => 0
+    ],
+    IMAGETYPE_GIF => [
+        'load' => 'imagecreatefromgif',
+        'save' => 'imagegif'
+    ]
+];
 	function createThumbnail($src, $dest, $targetWidth, $targetHeight = null) {
 
 		// 1)lae pilt alla soovitud kohast ($src) -> kas eksisteerib (pilt), kas on õige tüüp, laadi üles
@@ -69,25 +88,25 @@
 		// we need the type to determine the correct loader
 		$type = exif_imagetype($src);
 	
-		// kui ühtegi korrektset tüüpi v handlerit ei ole, siis exit
+	// kui ühtegi korrektset tüüpi v handlerit ei ole, siis exit
 		if (!$type || !IMAGE_HANDLERS[$type]) {
 			return null;
 		}
 	
-		// laadi pilt korrektselt üles
+	// 	// laadi pilt korrektselt üles
 		$image = call_user_func(IMAGE_HANDLERS[$type]['load'], $src);
 	
-		// kui pakutud asukohas pilti ei ole siis -> exit
+	// 	// kui pakutud asukohas pilti ei ole siis -> exit
 		if (!$image) {
 			return null;	
 		}
-		// 2. Loo pöidlapilt ja lae vähendatud pilt( $image) üles (leia pildi suurus, defineeri väljundi suurus, loo pöidlapilt sellest suurusest lähtuvalt, sea gifidele ja pngdele alpha transparency, joonista viimane versiooni pöidlapildist)
+	// 	// 2. Loo pöidlapilt ja lae vähendatud pilt( $image) üles (leia pildi suurus, defineeri väljundi suurus, loo pöidlapilt sellest suurusest lähtuvalt, sea gifidele ja pngdele alpha transparency, joonista viimane versiooni pöidlapildist)
 	
-		// orikas oma  suuruses ja laiusega
+	// 	// originaal oma  suuruses ja laiusega
 		$width = imagesx($image);
 		$height = imagesy($image);
 	
-		// maintain aspect ratio when no height set
+		// algselt on loodav kõrgus null
 		if ($targetHeight == null) {
 	
 			// milline on kõrguse ja laiuse proportsioon
@@ -106,26 +125,26 @@
 			}
 		}
 	
-		// teeme pildist duplikaadi eelnevalt leitud suuruse järgi
+	// 	// teeme pildist duplikaadi eelnevalt leitud suuruse järgi
 		$thumbnail = imagecreatetruecolor($targetWidth, $targetHeight);
 	
-		// gifidele ja pngdele läbipaistvuse sätted
-		if ($type == IMAGETYPE_GIF || $type == IMAGETYPE_PNG) {
+	// 	// gifidele ja pngdele läbipaistvuse sätted
+	// 	if ($type == IMAGETYPE_GIF || $type == IMAGETYPE_PNG) {
 	
-			// pilt läbipaistvaks
-			imagecolortransparent(
-				$thumbnail,
-				imagecolorallocate($thumbnail, 0, 0, 0)
-			);
+	// 		// pilt läbipaistvaks
+	// 		imagecolortransparent(
+	// 			$thumbnail,
+	// 			imagecolorallocate($thumbnail, 0, 0, 0)
+	// 		);
 	
-			// PNG erikohtlemine
-			if ($type == IMAGETYPE_PNG) {
-				imagealphablending($thumbnail, false);
-				imagesavealpha($thumbnail, true);
-			}
-		}
+	// 		// PNG erikohtlemine
+	// 		if ($type == IMAGETYPE_PNG) {
+	// 			imagealphablending($thumbnail, false);
+	// 			imagesavealpha($thumbnail, true);
+	// 		}
+		// }
 	
-		// kopeerimine terve pildi, et saaksime muuta selle proportsioone ja muuta selle pisipildiks
+	// 	// kopeerimine terve pildi, et saaksime muuta selle proportsioone ja muuta selle pisipildiks
 		imagecopyresampled(
 			$thumbnail,
 			$image,
@@ -135,14 +154,15 @@
 		);
 	
 
-		// 3) Salvesta pöidlapilt 
+	// 	// 3) Salvesta pöidlapilt 
 		
-		$myNewImage = imagecreatetruecolor($newW, $newH);
-		//kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
-	    imagesavealpha($myNewImage, true);
-	    $transColor = imagecolorallocatealpha($myNewImage, 0, 0, 0, 127);
-	    imagefill($myNewImage, 0, 0, $transColor);
-		imagecopyresampled($myNewImage, $src, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
+		$myNewImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+		// //kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
+	    // imagesavealpha($myNewImage, true);
+	    // $transColor = imagecolorallocatealpha($myNewImage, 0, 0, 0, 127);
+	    // imagefill($myNewImage, 0, 0, $transColor);
+		// imagecopyresampled($myNewImage, $src, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
 		return $myNewImage;
 		
 	}	

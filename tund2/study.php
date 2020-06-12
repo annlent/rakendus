@@ -13,49 +13,37 @@ $studyError = null;
 
 if (isset($_POST['studyBtn'])) {
 
-    if (isset($_POST["studyTopicId"]) and !empty(test_input($_POST["studyTopicId"]))) {
-        $studyTopicId = test_input($_POST["studyTopicId"]);
+    if (isset($_POST["studyTopicId"]) and !empty($_POST["studyTopicId"])) {
+        $studyTopicId = ($_POST["studyTopicId"]);
     } else {
         $studyError .= "Õppeaine ei ole valitud! ";
     }
 
-    if (isset($_POST["studyActivity"]) and !empty(test_input($_POST["studyActivity"]))) {
-        $studyActivity = test_input($_POST["studyActivity"]);
+    if (isset($_POST["studyActivity"]) and !empty($_POST["studyActivity"])) {
+        $studyActivity = $_POST["studyActivity"];
     } else {
         $studyError .= "Tegevus ei ole valitud! ";
     }
 
-    if (isset($_POST["elapsedTime"]) and !empty(test_input($_POST["elapsedTime"])) and $_POST["elapsedTime"] != 0) {
-        $elapsedTime = test_input($_POST["elapsedTime"]);
+    if (isset($_POST["elapsedTime"]) and !empty($_POST["elapsedTime"]) and $_POST["elapsedTime"] != 0) {
+        $elapsedTime = $_POST["elapsedTime"];
     } else {
         $studyError .= "Tegevusele kulunud aeg ei ole määratud! ";
     }
 
     //Saadan andmebaasi
-    if (empty($studyError)) {
+        if (empty($studyError)) {
+            $response = saveStudy($studyTopicId, $studyActivity, $elapsedTime);
 
-        $response = saveStudy($studyTopicId, $studyActivity, $elapsedTime);
-
-        if ($response == 1) {
-            $studyError = "Tegevus on salvestet";
-        } else {
+            if ($response == 1) {
+             $studyError = "Tegevus on salvestet!";
+             } else {
             $studyError = "Tegevuse salvestamisel tekkis viga!";
+            }
         }
-    }
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="et">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veebirakendused ja nende loomine 2020</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-</head>
-
-<body>
 
 
 
@@ -75,8 +63,8 @@ if (isset($_POST['studyBtn'])) {
         <section class="text-center">
 
             <section class="text-center">
-                <h1 class="jumbotron-heading">Õpingute sisestamine</h1>
-                <p class="lead text-muted">See leht on valminud õppetöö raames</p>
+                <h1 class="jumbotron">Õpingute sisestamine</h1>
+                <p class="lead text-info">See leht on valminud õppetöö raames</p>
                 <br>
             </section>
             <div>
@@ -84,13 +72,25 @@ if (isset($_POST['studyBtn'])) {
                     <div class="form-row">
                         <div class="col">
                             <select class="form-control" name="studyTopicId">
-                                <option value="" selected disabled>Õppeaine</option>
+                                <option value="">Õppeaine</option>
+                                <option value="1">Üld- ja sotsiaalpsühholoogia</option>
+                                <option value="2">Veebirakendused ja nende loomine</option>
+                                <option value="3">Programmeerimine I</option>
+                                <option value="4">Disaini alused</option>
+                                <option value="5">Videomängude disain</option>
+                                <option value="6">Andmebaasid</option>
+                                <option value="7">Sissejuhatus tarkvaraarendusse</option>
+                                <option value="8">Sissejuhatus informaatikasse</option>
                                 <?php echo $studyTopicsOptions; ?>
                             </select>
                         </div>
                         <div class="col">
                             <select class="form-control" name="studyActivity">
                                 <option value="" selected disabled>Tegevus</option>
+                                <option value="1">Iseseisva materjali loomine</option>
+                                <option value="2">Koduste ülesannete lahendamine</option>
+                                <option value="3">Kordamine</option>
+                                <option value="4">Rühmatöö</option>
                                 <?php echo $studyActivitiesOptions; ?>
                             </select>
                         </div>
@@ -99,11 +99,14 @@ if (isset($_POST['studyBtn'])) {
                         <div class="form-group col-md-2">
                             <br>
                             <label>Tegevusele kulunud aeg:</label>
-                            <input class="form-control" type="number" min=".25" max="24" step=".25" name="elapsedTime">
+                            <input class="form-control" type="number" min=".25" max="24" step=".25" name="elapsedTime"value="<?php echo $elapsedTime; ?>">
                         </div>
                     </div><br>
-                    <input type="submit" class="btn btn-secondary" name="studyBtn" value="Salvesta tegevus!"><br><br>
+                    <input type="submit" class="btn btn-info" name="studyBtn" value="Salvesta tegevus!"><br><br>
                     <span><?php echo $studyError; ?></span>
+                    <div>
+            <a class="btn btn-info" href="studyinfo.php">Vaata varasemat</a>
+        </div>
                 </form>
             </div>
         </section>

@@ -28,7 +28,7 @@ $studyTableHTML = getStudyTableHTML();
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Õppeaine</th>
+                    <th scope="col">Aine</th>
                     <th scope="col">Tegevus</th>
                     <th scope="col">Kulunud aeg</th>
                     <th scope="col">Kuupäev</th>

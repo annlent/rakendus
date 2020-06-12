@@ -24,8 +24,6 @@
 		header("Location: page.php");
 	}
 
-	require("../../../../configuration.php");
-	require("fnc_gallery.php");
 	
 	$privateThumbnails = readAllMyPictureThumbs();
 ?>

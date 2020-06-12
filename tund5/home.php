@@ -1,5 +1,7 @@
 <?php
 	require("../../../../configuration.php");
+	require("fnc_news.php");
+	require("fnc_user.php");
 	
 	//sessiooni käivitamine või kasutamine
 	//session_start();
@@ -27,13 +29,14 @@
 <html lang="et">
 <head>
 	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<title>Veebirakendused ja nende loomine 2020</title>
 </head>
 <body>
-	<h1>Meie äge koduleht</h1>
+	<h1>Meie lombakas koduleht</h1>
 	<p>Tere! <?php echo $_SESSION["userFirstName"] . " " .$_SESSION["userLastName"]; ?></p>
-	<p>See leht on valminud õppetöö raames!</p>
-	<p>Logi <a href="?logout=1">välja</a>!</p>
+	<p>See leht on valminud õppetöö raames</p>
+	<p>Logi <a class="btn btn-info" href="?logout=1">välja</a></p>
     <hr>
 	<h2>Meie süsteemis leiad</h2>
 	<ul>
@@ -41,8 +44,8 @@
 		<li><a href="news.php">Uudiste lugemine</a></li>
 		<li><a href="photoUpload.php">Fotode üleslaadimine</a></li>
 		<li><a href="privategallery.php">Mo päevapildid</a></li>
-		<li><a href="semipublicgallery.php">Kes sisse on loginud ja avaldanud</a></li>
+		<li><a href="semipublicgallery.php">Kasutajate päevapildid</a></li>
 	</ul>
-	<p> Mine <a href=page.php >tagasi </a></p>
+	<p> Mine <a class="btn btn-info" href=page.php >tagasi </a></p>
 </body>
 </html>

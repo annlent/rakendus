@@ -100,7 +100,7 @@ function getStudyTopicsOptions()
     $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
     mysqli_set_charset($conn, "utf8");
 
-    $stmt = $conn->prepare("SELECT id, course FROM vr20_studytopics order by course asc");
+    $stmt = $conn->prepare("SELECT id, course, time FROM vr20_studytopics order by course asc");
     echo $conn->error;
 
     $stmt->bind_result($idFromDB, $courseNameFromDB, $dateFromDB);
@@ -128,10 +128,10 @@ function getStudyActivitiesOptions()
     $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
     mysqli_set_charset($conn, "utf8");
 
-    $stmt = $conn->prepare("SELECT id, activity FROM vr20_studyactivities order by activity asc");
+    $stmt = $conn->prepare("SELECT id, course, activity FROM vr20_studyactivities order by activity asc");
     echo $conn->error;
 
-    $stmt->bind_result($idFromDB, $activityNameFromDB);
+    $stmt->bind_result($idFromDB, $courseNameFromD, $activityNameFromDB);
     $stmt->execute();
 
 
@@ -187,7 +187,7 @@ function getStudyTableHTML()
     $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
     mysqli_set_charset($conn, "utf8");
 
-    $stmt = $conn->prepare("SELECT sl.id, st.course, sa.activity, time, day 
+    $stmt = $conn->prepare("SELECT sl.id, sl.course, sl.activity, sl.time, sa.time 
                                 FROM vr20_studylog sl 
                                 JOIN vr20_studytopics st on sl.course=st.id
                                 JOIN vr20_studyactivities sa on sl.activity=sa.id
@@ -212,7 +212,7 @@ function getStudyTableHTML()
     }
 
     if ($response == null) {
-        $response = "Ühtegi tegevust ei ole lisatud!";
+        echo "<p>Ühtegi tegevust ei ole lisatud!</p>";
     }
 
     $stmt->close();

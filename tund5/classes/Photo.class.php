@@ -23,7 +23,7 @@
 			
 		}
 		
-		function __destruct(){
+		function __destruct() {
 			if(isset($this->myTempImage)){
 				imagedestroy($this->myTempImage);
 			}
@@ -31,6 +31,17 @@
 				@imagedestroy($this->myNewImage);
 			}
 		}
+		
+		public function checkPhotoSize() {
+            $sizeCheck = null;
+            if($_FILES["fileToUpload"]["size"] > $this->fileSizeLimit){
+                $sizeCheck = 0;
+            } else {
+                $sizeCheck = 1;
+            }
+
+            return $sizeCheck;
+		} 
 		
 		private function checkImageForUpload(){
 			//kas on pilt
@@ -82,44 +93,44 @@
 			return $image;
 		}
 		
-		public function createFileName($prefix){
-		  $this->fileName = $prefix .$this->timeStamp ."." .$this->imageFileType;
+		public function createFileName($fileNamePrefix){ // ei anna otseselt ette eesliidet (see tuleb photoUplod.php)
+		 $fileName = $fileNamePrefix .$this->timeStamp ."." .$this->imageFileType;
 	    }
 		
 		public function resizePhoto($w, $h, $keepOrigProportion = true)
 		{
-			$imageW = imagesx($this->myTempImage);
-			$imageH = imagesy($this->myTempImage);
-			$newW = $w;
-			$newH = $h;
-			$cutX = 0;
-			$cutY = 0;
-			$cutSizeW = $imageW;
+		$imageW = imagesx($this->myTempImage);
+		$imageH = imagesy($this->myTempImage);
+		$newW = $w;
+		$newH = $h;
+		$cutX = 0;
+		$cutY = 0;
+		$cutSizeW = $imageW;
 			$cutSizeH = $imageH;
 			
-			if($w == $h){
-				if($imageW > $imageH){
-					$cutSizeW = $imageH;
-					$cutX = round(($imageW - $cutSizeW) / 2);
-				} else {
-					$cutSizeH = $imageW;
-					$cutY = round(($imageH - $cutSizeH) / 2);
-				}	
-			} elseif($keepOrigProportion){//kui tuleb originaalproportsioone säilitada
-				if($imageW / $w > $imageH / $h){
-					$newH = round($imageH / ($imageW / $w));
-				} else {
-					$newW = round($imageW / ($imageH / $h));
-				}
-			} else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
-				if($imageW / $w < $imageH / $h){
-					$cutSizeH = round($imageW / $w * $h);
-					$cutY = round(($imageH - $cutSizeH) / 2);
-				} else {
-					$cutSizeW = round($imageH / $h * $w);
-					$cutX = round(($imageW - $cutSizeW) / 2);
-				}
+		if($w == $h){
+			if($imageW > $imageH){
+				$cutSizeW = $imageH;
+				$cutX = round(($imageW - $cutSizeW) / 2);
+			} else {
+				$cutSizeH = $imageW;
+				$cutY = round(($imageH - $cutSizeH) / 2);
+			}	
+		} elseif($keepOrigProportion){//kui tuleb originaalproportsioone säilitada
+			if($imageW / $w > $imageH / $h){
+				$newH = round($imageH / ($imageW / $w));
+			} else {
+				$newW = round($imageW / ($imageH / $h));
 			}
+		} else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
+			if($imageW / $w < $imageH / $h){
+				$cutSizeH = round($imageW / $w * $h);
+				$cutY = round(($imageH - $cutSizeH) / 2);
+			} else {
+				$cutSizeW = round($imageH / $h * $w);
+				$cutX = round(($imageW - $cutSizeW) / 2);
+			}
+		}
 			
 			//loome uue ajutise pildiobjekti
 			$this->myNewImage = imagecreatetruecolor($newW, $newH);
@@ -135,7 +146,7 @@
 			$wmFileType = strtolower(pathinfo($wmFile,PATHINFO_EXTENSION));
 			//$waterMark = imagecreatefrompng($wmFile);
 		  $waterMark = $this->createImageFromFile($wmFile, $wmFileType);
-		  $waterMarkW = imagesx($waterMark);
+		  $waterMarkW = imagesx($waterMark); //see on php enda funktsioon ja leiab pildi laiuse
 		  $waterMarkH = imagesy($waterMark);
 		  if($wmLocation == 1 or $wmLocation == 4){
 			  $waterMarkX = $fromEdge;

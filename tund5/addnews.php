@@ -1,5 +1,9 @@
 <?php
+	require("../../../../configuration.php");
 	require("classes/Session.class.php");
+	require("fnc_news.php");
+	require("fnc_user.php");
+
 	SessionManager::sessionStart("rakendus", 0, "/~annika.lentso/", "tigu.hk.tlu.ee");
 		
 	//kas pole sisseloginud
@@ -13,9 +17,7 @@
 		session_destroy();
 		header("Location: page.php");
 	}
-	
-	//require("../../../../configuration.php");
-	require("fnc_news.php");
+
 	//include
     //var_dump($_POST);
 	//echo $_POST["newsTitle"];
@@ -23,21 +25,21 @@
 	$newsContent = null;
 	$newsError = null;
 	
-	function test_input($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-	}
+	// function test_input($data) {
+	// 	$data = trim($data);
+	// 	$data = stripslashes($data);
+	// 	$data = htmlspecialchars($data);
+	// 	return $data;
+	// }
 	
 	if(isset($_POST["newsBtn"])){
-		if(isset($_POST["newsTitle"]) and !empty(test_input($_POST["newsTitle"]))){
-			$newsTitle = test_input($_POST["newsTitle"]);
+		if(isset($_POST["newsTitle"]) and !empty(($_POST["newsTitle"]))){
+			$newsTitle = ($_POST["newsTitle"]);
 		} else {
 			$newsError = "Uudise pealkiri on sisestamata! ";
 		}
-		if(isset($_POST["newsEditor"]) and !empty(test_input($_POST["newsEditor"]))){
-			$newsContent = test_input($_POST["newsEditor"]);
+		if(isset($_POST["newsEditor"]) and !empty(($_POST["newsEditor"]))){
+			$newsContent = ($_POST["newsEditor"]);
 		} else {
 			$newsError .= "Uudise sisu on kirjutamata!";
 		}
@@ -69,7 +71,8 @@
 	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a href="?logout=1">välja</a>!</p>
 	<p>Tagasi <a href="home.php">avalehele</a>!</p>
 	<hr>
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"> 
+	<!-- POST meetodina peaks kaotama urlist kasutaja sisestet teksti -->
 		<label>Uudise pealkiri: </label><br>
 		<input type="text" name="newsTitle" placeholder="Uudise pealkiri" value="<?php echo $newsTitle; ?>"><br>
 		<label>Uudise sisu</label><br>
