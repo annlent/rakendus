@@ -27,13 +27,14 @@
 <html lang="et">
 <head>
 	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<title>Veebirakendused ja nende loomine 2020</title>
 </head>
 <body>
 	<h1>Uudised</h1>
 	<p>See leht on valminud õppetöö raames</p>
-	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a href="?logout=1">välja</a>!</p>
-	<p>Tagasi <a href="home.php">avalehele</a>!</p>
+	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a class="btn btn-warning" href="?logout=1">välja</a></p>
+	<p>Tagasi <a class="btn btn-success" href="home.php">avalehele</a></p>
 	<hr>
     <div>
 		<?php echo $newsHTML; ?>
