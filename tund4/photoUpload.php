@@ -25,9 +25,9 @@
 	//var_dump($_POST);
 	//var_dump($_FILES);
 	
-	$originalPhotoDir = "../../uploadOriginalPhoto/";
-	$normalPhotoDir = "../../normalPhotoUpload/";
-	$thumbnailDir = "../../uploadThumbnail";
+	// $originalPhotoDir = "../../uploadOriginalPhoto/";
+	// $normalPhotoDir = "../../normalPhotoUpload/";
+	// $thumbnailDir = "../../uploadThumbnail";
 	$error = null;
 	$notice = null;
 	$imageFileType = null;
@@ -38,8 +38,8 @@
 	$maxHeight = 400;
 	$thumbSize = 100;
 	
-	if(isset($_POST["photoSubmit"])){//  and !empty($_FILES["fileToUpload"]["tmp_name"])){
-		$originalTarget = $originalPhotoDir .$_FILES["fileToUpload"]["tmp_name"]; //konfifail. paneb faili tigu kataloogi
+	if(isset($_POST["photoSubmit"]) and !empty($_FILES["fileToUpload"]["tmp_name"])){
+		// $originalTarget = $originalPhotoDir .$_FILES["fileToUpload"]["tmp_name"]; //konfifail. paneb faili tigu kataloogi
 		//	move_upload_file($_FILES["fileToUpload"]["tmp_name"], $originalTarget); //ajutine 
 			//Pâriselus peaks küsima serveri haldajalt 6iguseid
 		
@@ -65,10 +65,10 @@
 		
 		//loome failile oma nime 
 		$timestamp = microtime(1) * 10000;
-		$fileName = $fileNamePrefix . $timestamp . "." .$imageFileType; //lisab failile nn ajatempli, st saame vr_+aeg.jpg/png
+		$fileName = $fileNamePrefix . $timestamp . "." . $imageFileType; //lisab failile nn ajatempli, st saame vr_+aeg.jpg/png
 		
 		//$originalTarget = $originalPhotoDir .$_FILES["fileToUpload"]["name"];
-		$originalTarget = $originalPhotoDir .$fileName;
+		$originalTarget = $originalPhotoDir . $fileName;
 		
 		//äkki on fail olemas?
 		if(file_exists($originalTarget)){
@@ -136,7 +136,7 @@
 			//minu vana kood
 			 $photoUp->resizePhoto($maxWidth, $maxHeight);
 			
-			$result = saveImgToFile($photoUp->myNewImage, $normalPhotoDir .$fileName, $imageFileType);
+			$result = saveImgToFile($photoUp->myNewImage, $normalPhotoDir . $fileName, $imageFileType);
 			if($result == 1) {
 				$notice = "Vähendatud pilt laeti üles! ";
 			} else {
@@ -149,7 +149,7 @@
 			//lõpetame vähendatud pildiga ja teeme thumbnail'i
 			/* imageDestroy($myNewImage);
 			// $myNewImage = resizePhoto($myTempImage, $thumbSize, $thumbSize); */
-			$result = $photoUp->saveImgToFile($thumbnailDir .$fileName);
+			$result = $photoUp->saveImgToFile($thumbnailDir . $fileName);
 			if($result == 1) {
 				$notice = "Pisipilt laeti üles! ";
 			} else {
@@ -172,7 +172,7 @@
 				if($result == 1){
 					$notice .= "Pildi andmed lisati andmebaasi!";
 				} else {
-					$error .= " Pildi andmete lisamisel andmebaasi tekkis tehniline tõrge: " .$result;
+					$error .= " Pildi andmete lisamisel andmebaasi tekkis tehniline tõrge: " . $result;
 				}
 			}
 			
@@ -184,13 +184,14 @@
 <html lang="et">
 <head>
 	<meta charset="utf-8">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<title>Veebirakendused ja nende loomine 2020</title>
 </head>
 <body>
 	<h1>Fotode üleslaadimine</h1>
 	<p>See leht on valminud õppetöö raames</p>
-	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a href="?logout=1">välja</a>!</p>
-	<p>Tagasi <a href="home.php">avalehele</a>!</p>
+	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a class="btn btn-warning" href="?logout=1">välja</a></p>
+	<p>Tagasi <a class="btn btn-success" href="home.php">avalehele</a></p>
 	<hr>
 	
     <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">

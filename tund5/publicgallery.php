@@ -25,7 +25,7 @@ if (!isset($_GET["page"]) or $_GET["page"] < 1) {
     $page = $_GET["page"];
 }
 
-$publicPhotoThumb = readAllPublicPictureThumbsPage( $page, $limit);
+$publicPhotoThumb = readAllMyPictureThumbsPage( $page, $limit);
 
 ?>
 
@@ -47,7 +47,22 @@ $publicPhotoThumb = readAllPublicPictureThumbsPage( $page, $limit);
     <div id="publicgal" class="bg-image">
         <div class="container transparent" style="margin-top:10%;">
 
-            <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0" style="color: #ffffff;">See omb'gi galõrii</h1>
+    <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0" style="color: #ffffff;">See omb'gi galõrii</h1>
+    <link rel="stylesheet" type="text/css" href="style/gallery.css">
+    <link rel="stylesheet" type="text/css" href="style/modal.css">
+    <script src="javascript/modal.js" defer></script>
+    <div id="modalArea" class="modalArea">
+        <!--Sulgemisnupp-->
+        <span id="modalClose" class="modalClose">&times;</span>
+        <!--pildikoht-->
+        <div class="modalHorizontal">
+            <div class="modalVertical">
+                <p id="modalCaption"></p>
+                <img src="tyhi.png" id="modalImg" class="modalImg" alt="galeriipilt">
+
+                 </div>
+            </div>
+        </div>
             <?php
             if ($page > 1) {
                 echo '<a href="?page=' . ($page - 1) . '">Eelmine</a> | ';

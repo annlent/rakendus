@@ -10,7 +10,7 @@
 		public $error;
 		public $photoDate;
 		private $myTempImage;
-		private $myNewImage;
+		private $myNewImage; //kuiklass hakkab pikslikogumit faili salvestama, siis see tagasi private (eelmises oli public)
 		
 		function __construct($picToUpload, $fileSizeLimit, $allowedFileTypes) 
 		{
@@ -19,6 +19,7 @@
 			$this->fileSizeLimit = $fileSizeLimit;
 			$this->allowedFileTypes = $allowedFileTypes;
 			$this->timeStamp = microtime(1) * 10000;
+			// $this->myTempImage = $this->createImageFromFile($this->picToUpload["tmp_name"], $this->imageFileType);
 			$this->checkImageForUpload();
 			
 		}
@@ -32,16 +33,16 @@
 			}
 		}
 		
-		public function checkPhotoSize() {
-            $sizeCheck = null;
-            if($_FILES["fileToUpload"]["size"] > $this->fileSizeLimit){
-                $sizeCheck = 0;
-            } else {
-                $sizeCheck = 1;
-            }
+		// public function checkPhotoSize() {
+        //     $sizeCheck = null;
+        //     if($_FILES["fileToUpload"]["size"] > $this->fileSizeLimit){
+        //         $sizeCheck = 0;
+        //     } else {
+        //         $sizeCheck = 1;
+        //     }
 
-            return $sizeCheck;
-		} 
+        //     return $sizeCheck;
+		// } 
 		
 		private function checkImageForUpload(){
 			//kas on pilt
@@ -71,7 +72,7 @@
 				
 				//if($this->imageFileType != "jpg" and $this->imageFileType != "png" and $this->imageFileType != "gif" ) {
 				if(!in_array($check["mime"], $this->allowedFileTypes)) {
-				  $this->error = 3;
+					 $this->error = 3;
 				}
 			}
 			
@@ -80,10 +81,11 @@
 			if($this->error == null){
 			  $this->myTempImage = $this->createImageFromFile($this->picToUpload["tmp_name"], $this->imageFileType);
 			}
-		  
+	
 		}//checkImageForUpload lõpp
+	
 		
-		private function createImageFromFile($imageFile, $fileType){
+		private function createImageFromFile($imageFile, $fileType){ //private - kui tahad, et omadus v meetod oleks nähtav vaid kindlas klasss
 			if($fileType == "jpg"){
 				$image = imagecreatefromjpeg($imageFile);
 			}
@@ -93,10 +95,12 @@
 			return $image;
 		}
 		
-		public function createFileName($fileNamePrefix){ // ei anna otseselt ette eesliidet (see tuleb photoUplod.php)
-		 $fileName = $fileNamePrefix .$this->timeStamp ."." .$this->imageFileType;
+
+		public function createFileName($prefix){ // ei anna otseselt ette eesliidet (see tuleb photoUplod.php)
+		 $this->fileName = $prefix . $this->timeStamp ."." . $this->imageFileType;
 	    }
 		
+
 		public function resizePhoto($w, $h, $keepOrigProportion = true)
 		{
 		$imageW = imagesx($this->myTempImage);
@@ -108,37 +112,37 @@
 		$cutSizeW = $imageW;
 			$cutSizeH = $imageH;
 			
-		// if($w == $h){
-		// 	if($imageW > $imageH){
-		// 		$cutSizeW = $imageH;
-		// 		$cutX = round(($imageW - $cutSizeW) / 2);
-		// 	} else {
-		// 		$cutSizeH = $imageW;
-		// 		$cutY = round(($imageH - $cutSizeH) / 2);
-		// 	}	
-		// } elseif($keepOrigProportion){//kui tuleb originaalproportsioone säilitada
-		// 	if($imageW / $w > $imageH / $h){
-		// 		$newH = round($imageH / ($imageW / $w));
-		// 	} else {
-		// 		$newW = round($imageW / ($imageH / $h));
-		// 	}
-		// } else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
-		// 	if($imageW / $w < $imageH / $h){
-		// 		$cutSizeH = round($imageW / $w * $h);
-		// 		$cutY = round(($imageH - $cutSizeH) / 2);
-		// 	} else {
-		// 		$cutSizeW = round($imageH / $h * $w);
-		// 		$cutX = round(($imageW - $cutSizeW) / 2);
-		// 	}
-		// }
+		if($w == $h){
+			if($imageW > $imageH){
+				$cutSizeW = $imageH;
+				$cutX = round(($imageW - $cutSizeW) / 2);
+			} else {
+				$cutSizeH = $imageW;
+				$cutY = round(($imageH - $cutSizeH) / 2);
+			}	
+		} elseif($keepOrigProportion){//kui tuleb originaalproportsioone säilitada
+			if($imageW / $w > $imageH / $h){
+				$newH = round($imageH / ($imageW / $w));
+			} else {
+				$newW = round($imageW / ($imageH / $h));
+			}
+		} else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
+			if($imageW / $w < $imageH / $h){
+				$cutSizeH = round($imageW / $w * $h);
+				$cutY = round(($imageH - $cutSizeH) / 2);
+			} else {
+				$cutSizeW = round($imageH / $h * $w);
+				$cutX = round(($imageW - $cutSizeW) / 2);
+			}
+		}
 			
-			//loome uue ajutise pildiobjekti
-			$this->myNewImage = imagecreatetruecolor($newW, $newH);
-			//kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
-			imagesavealpha($this->myNewImage, true);
-			$transColor = imagecolorallocatealpha($this->myNewImage, 0, 0, 0, 127);
-			imagefill($this->myNewImage, 0, 0, $transColor);
-			imagecopyresampled($this->myNewImage, $this->myTempImage, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
+		//loome uue ajutise pildiobjekti
+		$this->myNewImage = imagecreatetruecolor($newW, $newH);
+		//kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
+		imagesavealpha($this->myNewImage, true);
+		$transColor = imagecolorallocatealpha($this->myNewImage, 0, 0, 0, 127);
+		imagefill($this->myNewImage, 0, 0, $transColor);
+		imagecopyresampled($this->myNewImage, $this->myTempImage, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
 		}
 				
 		public function addWatermark($wmFile, $wmLocation, $fromEdge)
@@ -180,7 +184,7 @@
 		}
 		
 		public function addText($size, $y, $textToImage){
-			$textColor = imagecolorallocatealpha($this->myNewImage, 0,102,255, 60);//valge, 60% alpha
+			$textColor = imagecolorallocatealpha($this->myNewImage, 255, 255, 255, 60);//valge, 60% alpha
 			//Kirjutatakse tekst pildile, parameetriteks: pildiobjekt, teksti suurus (näiteks 14), , nurk (teksti saab kaldu panna), x-koordinaat, y-koordinaat, teksti värv (eelnevalt defineeritud), TTF-fondi url, kirjutatav tekst
 			imagettftext($this->myNewImage, $size, 0, 10, $y, $textColor, "./Soria.ttf", $textToImage);
 		}

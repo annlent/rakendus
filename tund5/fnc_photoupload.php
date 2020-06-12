@@ -53,6 +53,7 @@
 		
 		//loome uue ajutise pildiobjekti
 		$myNewImage = imagecreatetruecolor($newW, $newH);
+		
 		//kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
 	    imagesavealpha($myNewImage, true);
 	    $transColor = imagecolorallocatealpha($myNewImage, 0, 0, 0, 127);
@@ -63,70 +64,71 @@
 	// Link image type to correct image loader and saver
 // - makes it easier to add additional types later on
 // - makes the function easier to read
-const IMAGE_HANDLERS = [
-    IMAGETYPE_JPEG => [
-        'load' => 'imagecreatefromjpeg',
-        'save' => 'imagejpeg',
-        'quality' => 100
-    ],
-    IMAGETYPE_PNG => [
-        'load' => 'imagecreatefrompng',
-        'save' => 'imagepng',
-        'quality' => 0
-    ],
-    IMAGETYPE_GIF => [
-        'load' => 'imagecreatefromgif',
-        'save' => 'imagegif'
-    ]
-];
-	function createThumbnail($src, $dest, $targetWidth, $targetHeight = null) {
+// const IMAGE_HANDLERS = [
+//     IMAGETYPE_JPEG => [
+//         'load' => 'imagecreatefromjpeg',
+//         'save' => 'imagejpeg',
+//         'quality' => 100
+//     ],
+//     IMAGETYPE_PNG => [
+//         'load' => 'imagecreatefrompng',
+//         'save' => 'imagepng',
+//         'quality' => 0
+//     ],
+//     IMAGETYPE_GIF => [
+//         'load' => 'imagecreatefromgif',
+//         'save' => 'imagegif'
+//     ]
+// ];
 
-		// 1)lae pilt alla soovitud kohast ($src) -> kas eksisteerib (pilt), kas on õige tüüp, laadi üles
+// 	function createThumbnail($src, $dest, $targetWidth, $targetHeight = null) {
+
+// 		// 1)lae pilt alla soovitud kohast ($src) -> kas eksisteerib (pilt), kas on õige tüüp, laadi üles
 
 	
-		// otsi pildi tüüp
-		// we need the type to determine the correct loader
-		$type = exif_imagetype($src);
+// 		// otsi pildi tüüp
+// 		// we need the type to determine the correct loader
+// 		$type = exif_imagetype($src);
 	
-	// kui ühtegi korrektset tüüpi v handlerit ei ole, siis exit
-		if (!$type || !IMAGE_HANDLERS[$type]) {
-			return null;
-		}
+// 	// kui ühtegi korrektset tüüpi v handlerit ei ole, siis exit
+// 		if (!$type || !IMAGE_HANDLERS[$type]) {
+// 			return null;
+// 		}
 	
-	// 	// laadi pilt korrektselt üles
-		$image = call_user_func(IMAGE_HANDLERS[$type]['load'], $src);
+// 	// 	// laadi pilt korrektselt üles
+// 		$image = call_user_func(IMAGE_HANDLERS[$type]['load'], $src);
 	
-	// 	// kui pakutud asukohas pilti ei ole siis -> exit
-		if (!$image) {
-			return null;	
-		}
-	// 	// 2. Loo pöidlapilt ja lae vähendatud pilt( $image) üles (leia pildi suurus, defineeri väljundi suurus, loo pöidlapilt sellest suurusest lähtuvalt, sea gifidele ja pngdele alpha transparency, joonista viimane versiooni pöidlapildist)
+// 	// 	// kui pakutud asukohas pilti ei ole siis -> exit
+// 		if (!$image) {
+// 			return null;	
+// 		}
+// 	// 	// 2. Loo pöidlapilt ja lae vähendatud pilt( $image) üles (leia pildi suurus, defineeri väljundi suurus, loo pöidlapilt sellest suurusest lähtuvalt, sea gifidele ja pngdele alpha transparency, joonista viimane versiooni pöidlapildist)
 	
-	// 	// originaal oma  suuruses ja laiusega
-		$width = imagesx($image);
-		$height = imagesy($image);
+// 	// 	// originaal oma  suuruses ja laiusega
+// 		$width = imagesx($image);
+// 		$height = imagesy($image);
 	
-		// algselt on loodav kõrgus null
-		if ($targetHeight == null) {
+// 		// algselt on loodav kõrgus null
+// 		if ($targetHeight == null) {
 	
-			// milline on kõrguse ja laiuse proportsioon
-			$ratio = $width / $height;
+// 			// milline on kõrguse ja laiuse proportsioon
+// 			$ratio = $width / $height;
 	
-			// portreemõõdud (püstine a4)
-			// kasut muutujat $ratio et määrata proportsioonid ja mahtuda ruutu
-			if ($width > $height) {
-				$targetHeight = floor($targetWidth / $ratio);
-			}
-			// kui landscape (pikali a4)
-			// kasut muutujat $ratio et määrata proportsioonid ja mahtuda ruutu
-			else {
-				$targetHeight = $targetWidth;
-				$targetWidth = floor($targetWidth * $ratio);
-			}
-		}
+// 			// portreemõõdud (püstine a4)
+// 			// kasut muutujat $ratio et määrata proportsioonid ja mahtuda ruutu
+// 			if ($width > $height) {
+// 				$targetHeight = floor($targetWidth / $ratio);
+// 			}
+// 			// kui landscape (pikali a4)
+// 			// kasut muutujat $ratio et määrata proportsioonid ja mahtuda ruutu
+// 			else {
+// 				$targetHeight = $targetWidth;
+// 				$targetWidth = floor($targetWidth * $ratio);
+// 			}
+// 		}
 	
-	// 	// teeme pildist duplikaadi eelnevalt leitud suuruse järgi
-		$thumbnail = imagecreatetruecolor($targetWidth, $targetHeight);
+// 	// 	// teeme pildist duplikaadi eelnevalt leitud suuruse järgi
+// 		$thumbnail = imagecreatetruecolor($targetWidth, $targetHeight);
 	
 	// 	// gifidele ja pngdele läbipaistvuse sätted
 	// 	if ($type == IMAGETYPE_GIF || $type == IMAGETYPE_PNG) {
@@ -145,31 +147,31 @@ const IMAGE_HANDLERS = [
 		// }
 	
 	// 	// kopeerimine terve pildi, et saaksime muuta selle proportsioone ja muuta selle pisipildiks
-		imagecopyresampled(
-			$thumbnail,
-			$image,
-			0, 0, 0, 0,
-			$targetWidth, $targetHeight,
-			$width, $height
-		);
+	// 	imagecopyresampled(
+	// 		$thumbnail,
+	// 		$image,
+	// 		0, 0, 0, 0,
+	// 		$targetWidth, $targetHeight,
+	// 		$width, $height
+	// 	);
 	
 
-	// 	// 3) Salvesta pöidlapilt 
+	// // 	// 3) Salvesta pöidlapilt 
 		
-		$myNewImage = imagecreatetruecolor($targetWidth, $targetHeight);
+	// 	$myNewImage = imagecreatetruecolor($targetWidth, $targetHeight);
 
-		// //kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
-	    // imagesavealpha($myNewImage, true);
-	    // $transColor = imagecolorallocatealpha($myNewImage, 0, 0, 0, 127);
-	    // imagefill($myNewImage, 0, 0, $transColor);
-		// imagecopyresampled($myNewImage, $src, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
-		return $myNewImage;
+	// 	// //kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
+	//     // imagesavealpha($myNewImage, true);
+	//     // $transColor = imagecolorallocatealpha($myNewImage, 0, 0, 0, 127);
+	//     // imagefill($myNewImage, 0, 0, $transColor);
+	// 	// imagecopyresampled($myNewImage, $src, 0, 0, $cutX, $cutY, $newW, $newH, $cutSizeW, $cutSizeH);
+	// 	return $myNewImage;
 		
-	}	
+	// }	
 
 
 	
-	function saveImgToFile($myNewImage, $target, $imageFileType){
+function saveImgToFile($myNewImage, $target, $imageFileType){
 		$notice = null;
 		if($imageFileType == "jpg"){
 			if(imagejpeg($myNewImage, $target, 90)){
@@ -184,6 +186,7 @@ const IMAGE_HANDLERS = [
 			} else {
 				$notice = 0;
 			}
-		}
+
 		return $notice;
 	}
+}

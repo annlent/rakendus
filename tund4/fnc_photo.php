@@ -11,7 +11,7 @@ function addPhotoData($fileName, $alt, $privacy, $origName){
 	$stmt->bind_param("issis", $_SESSION["userid"], $fileName, $alt, $privacy, $origName);
         
 	if($stmt->execute()){
-	$notice = "jaa";
+	$notice = 1;
 	} else {
 	$notice = $stmt->error;
 	}
