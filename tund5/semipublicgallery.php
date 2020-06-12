@@ -41,7 +41,7 @@
 	  $page = $_GET["page"];
 	}
 	
-	$gallery = readAllSemiPublicPictureThumbsPage($page, $limit);
+	$gallery = readAllSemiPublicPictureThumbs();
 ?>
 <!DOCTYPE html>
 <html lang="et">

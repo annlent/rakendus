@@ -1,5 +1,5 @@
 <?php
-	//require("../../../configuration.php");
+	require("../../../../configuration.php");
 	require("fnc_news.php");
 	//sessiooni käivitamine või kasutamine
 	//session_start();

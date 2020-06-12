@@ -108,29 +108,29 @@
 		$cutSizeW = $imageW;
 			$cutSizeH = $imageH;
 			
-		if($w == $h){
-			if($imageW > $imageH){
-				$cutSizeW = $imageH;
-				$cutX = round(($imageW - $cutSizeW) / 2);
-			} else {
-				$cutSizeH = $imageW;
-				$cutY = round(($imageH - $cutSizeH) / 2);
-			}	
-		} elseif($keepOrigProportion){//kui tuleb originaalproportsioone säilitada
-			if($imageW / $w > $imageH / $h){
-				$newH = round($imageH / ($imageW / $w));
-			} else {
-				$newW = round($imageW / ($imageH / $h));
-			}
-		} else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
-			if($imageW / $w < $imageH / $h){
-				$cutSizeH = round($imageW / $w * $h);
-				$cutY = round(($imageH - $cutSizeH) / 2);
-			} else {
-				$cutSizeW = round($imageH / $h * $w);
-				$cutX = round(($imageW - $cutSizeW) / 2);
-			}
-		}
+		// if($w == $h){
+		// 	if($imageW > $imageH){
+		// 		$cutSizeW = $imageH;
+		// 		$cutX = round(($imageW - $cutSizeW) / 2);
+		// 	} else {
+		// 		$cutSizeH = $imageW;
+		// 		$cutY = round(($imageH - $cutSizeH) / 2);
+		// 	}	
+		// } elseif($keepOrigProportion){//kui tuleb originaalproportsioone säilitada
+		// 	if($imageW / $w > $imageH / $h){
+		// 		$newH = round($imageH / ($imageW / $w));
+		// 	} else {
+		// 		$newW = round($imageW / ($imageH / $h));
+		// 	}
+		// } else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
+		// 	if($imageW / $w < $imageH / $h){
+		// 		$cutSizeH = round($imageW / $w * $h);
+		// 		$cutY = round(($imageH - $cutSizeH) / 2);
+		// 	} else {
+		// 		$cutSizeW = round($imageH / $h * $w);
+		// 		$cutX = round(($imageW - $cutSizeW) / 2);
+		// 	}
+		// }
 			
 			//loome uue ajutise pildiobjekti
 			$this->myNewImage = imagecreatetruecolor($newW, $newH);

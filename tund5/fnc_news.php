@@ -8,12 +8,12 @@
 		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 		
 		//sql päring
-		$stmt = $conn->prepare("INSERT INTO vr20_news (userid, title, content) VALUES (?, ?, ?) LIMIT ?");
+		$stmt= $conn->prepare("INSERT INTO vr20_news(userID, Title, Content) VALUES(?, ?, ?)");
 		echo $conn->error;
 
 		// seon päringuga tegelikud andmed
 		$userID = 1;
-		$stmt -> bind_param("iss", $_SESSION["userid"], $newsTitle, $newsContent); // i on integer, s on string ja d on decimal. Tegemist on kolm erinevat andmetüüpi
+		$stmt -> bind_param("iss", $userID, $newsTitle, $newsContent); // i on integer, s on string ja d on decimal. Tegemist on kolm erinevat andmetüüpi
 		
 		if ($stmt -> execute()) {
 			$response = 1;
@@ -36,12 +36,10 @@
 		//loon andmebaasiühenduse
 		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 		//$stmt = $conn->prepare("SELECT title, content FROM vr20_news");
-		$stmt = $conn->prepare("SELECT title, created, content, firstname, lastname FROM vr20_news WHERE deleted IS NULL ORDER BY id DESC LIMIT 3");		
-		// $stmt = $conn->prepare("SELECT title, content, created FROM vr20_news WHERE deleted IS NULL ORDER BY id DESC LIMIT ?");
-
+		$stmt = $conn->prepare("SELECT title, content, created FROM vr20_news WHERE deleted IS NULL ORDER BY id DESC LIMIT ?");
 		echo $conn->error;
-		//$stmt->bind_param("i", $limit);
-		$stmt->bind_result($titleFromDB, $createdFromDB, $contentFromDB, $firstnameFromDB, $lastnameFromDB);
+		$stmt->bind_param("i", $limit);
+		$stmt->bind_result($titleFromDB, $contentFromDB, $createdFromDB);
 		$stmt->execute();
 		//if($stmt->fetch())
 		//<h2>uudisepealkiri</h2>
@@ -51,7 +49,6 @@
 			$response .= "<h3>" .$titleFromDB ."</h3> \n";
 			$response .= "<p>Lisatud: " .$addedDate->format("d.m.Y H:i:s") ."</p> \n";
 			$response .= "<p>" .$contentFromDB ."</p> \n";
-			$response .= "<p>" .$firstnameFromDB.' '.$lastnameFromDB ."</p> \n";
 		}
 		if($response == null){
 			$response = "<p>Kahjuks uudised puuduvad!</p> \n";
@@ -62,48 +59,49 @@
 		$conn->close();
 		return $response;
 	}
-	
+
+
 	function readNews(){
 
-		$response = null;
-		//andmebaasi ühenduse loomine
-		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-	
-		$stmt = $conn->prepare("SELECT id, title, content, created FROM vr20_news where order by id desc LIMIT ?"); //https://www.w3schools.com/php/php_mysql_prepared_statements.asp
-		echo $conn->error;
-	
-		$stmt->bind_param("i", $limit); //see funktsioon seob muutuja SQL päringuga ning ütleb andmebaasile millised need muutujad/parameetrid on. i märgib siin integeri ehk numbrit (võimalus ka d double, s string b BLOB)
-		$stmt->bind_result($idFromDB, $titleFromDB, $contentFromDB, $dateFromDB); //loome uued muutujad andmebaasist
-		$stmt->execute();
-	
-	
-		while ($stmt->fetch()) {
-	
-			$response .= '<div class="jumbotron">';
-			$response .= '<h3 class="display-4">' . $titleFromDB . '</h3>'; //uudise pealkiri
-			$response .= '<p class="lead">Lisatud:' . $dateFromDB->format("d.m.Y H:i:s") . '</p>'; //uudise avaldamise kuupäev
-			$response .= '<hr class="my-4">'; 
-			$response .= '<p>' . $contentFromDB  . '</p> \n'; //uudise sisu
-			$response .= '<p class="lead">';
-			$response .= '<form method="post" action=""><button class="btn btn-warning" type="submit" name="newsDelBtn" value="' . $idFromDB . '">Kustuta</button></from>'; //kustuta nupp HTMLis ja selleks on vaja luu vorm, sest muidu ei saa seda nõnda lisada
-			$response .= '</p>';
-			$response .= '</div>';
-		}
-	
-		if ($response == null) {
-			$response = "<p>Kahjuks uudiseid pole!</p>";
-		}
-	//sulgen andmebaasi päringu ja andmebaasiühenduse
-		$stmt->close();
-		$conn->close();
-		return $response;
-	}
-	function deleteNews($id)
+    $response = null;
+    //andmebaasi ühenduse loomine
+    $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+
+    $stmt = $conn->prepare("SELECT id, title, content, created FROM vr20_news where order by id desc LIMIT ?"); //https://www.w3schools.com/php/php_mysql_prepared_statements.asp
+    echo $conn->error;
+
+    $stmt->bind_param("i", $limit); //see funktsioon seob muutuja SQL päringuga ning ütleb andmebaasile millised need muutujad/parameetrid on. i märgib siin integeri ehk numbrit (võimalus ka d double, s string b BLOB)
+    $stmt->bind_result($idFromDB, $titleFromDB, $contentFromDB, $dateFromDB); //loome uued muutujad andmebaasist
+    $stmt->execute();
+
+
+    while ($stmt->fetch()) {
+
+        $response .= '<div class="jumbotron">';
+        $response .= '<h3 class="display-4">' . $titleFromDB . '</h3>'; //uudise pealkiri
+        $response .= '<p class="lead">Lisatud:' . $dateFromDB->format("d.m.Y H:i:s") . '</p>'; //uudise avaldamise kuupäev
+        $response .= '<hr class="my-4">'; 
+        $response .= '<p>' . $contentFromDB  . '</p> \n'; //uudise sisu
+        $response .= '<p class="lead">';
+        $response .= '<form method="post" action=""><button class="btn btn-warning" type="submit" name="newsDelBtn" value="' . $idFromDB . '">Kustuta</button></from>'; //kustuta nupp HTMLis ja selleks on vaja luu vorm, sest muidu ei saa seda nõnda lisada
+        $response .= '</p>';
+        $response .= '</div>';
+    }
+
+    if ($response == null) {
+        $response = "<p>Kahjuks uudiseid pole!</p>";
+    }
+//sulgen andmebaasi päringu ja andmebaasiühenduse
+    $stmt->close();
+    $conn->close();
+    return $response;
+}
+function deleteNews($id)
 {
     $response = null;
 
     $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-    $stmt = $conn->prepare("UPDATE vr20_news SET deleted = NOW() WHERE id =?");
+    $stmt = $conn->prepare("UPDATE vr20_news SET deleted = NOW() WHERE Id =?");
 
     $stmt->bind_param("i", $id);
 
@@ -118,8 +116,3 @@
     $conn->close();
     return $response;
 }
-	
-	
-	
-	
-	
