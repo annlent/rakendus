@@ -37,9 +37,12 @@
     <hr>
 	<h2>Meie süsteemis leiad</h2>
 	<ul>
-		<li><a href="addnews.php">Uudiste lisamise</a></li>
-        <li><a href="news.php">Uudiste lugemise</a></li>
-        <li><a href="photoUpload.php">Fotode lisamine</a>
+		<li><a href="addnews.php">Uudiste lisamine</a></li>
+		<li><a href="news.php">Uudiste lugemine</a></li>
+		<li><a href="photoUpload.php">Fotode üleslaadimine</a></li>
+		<li><a href="privategallery.php">Mo päevapildid</a></li>
+		<li><a href="semipublicgallery.php">Kes sisse on loginud ja avaldanud</a></li>
 	</ul>
+	<p> Mine <a href=page.php >tagasi </a></p>
 </body>
 </html>

@@ -2,7 +2,7 @@
     class Test {
         //properties ehk muutujad
         private $secretNum = 3;
-        public $number =9;
+        public $number = 9;
 
         function __construct() {
             echo "Laeti klass!";
@@ -11,10 +11,12 @@
             //$this->reveal();
 
         } // constructor lõpetab
-        function __destruct()
-        {
-            
-        }
-            
-        
+        function __destruct() {
+        echo "Klass lõpetab!!!";
+    }
+    
+    public function reveal(){
+        echo "Salajane number on: " .$this->secretNum;
+    }
+    
     } //class lõpetab

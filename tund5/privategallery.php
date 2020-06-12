@@ -1,11 +1,16 @@
 <?php
-		require("../../../../configuration.php");
-	
+	require("../../../../configuration.php");
+	require("fnc_gallery.php");
 	//sessiooni käivitamine või kasutamine
 	//session_start();
 	//var_dump($_SESSION);
 	require("classes/Session.class.php");
-	SessionManager::sessionStart("vr20", 0, "/~andrus.rinde/", "tigu.hk.tlu.ee");
+	SessionManager::sessionStart("rakendus", 0, "/~annika.lentso/", "tigu.hk.tlu.ee");
+	
+	$backpage = "page.php";
+	$page = 1;
+	$limit = 8;
+	$picCount = countPrivatePics(3);
 	
 	//kas pole sisseloginud
 	if(!isset($_SESSION["userid"])){
@@ -32,7 +37,7 @@
 </head>
 <body>
 	<h1>Minu oma pildid</h1>
-	<p>See leht on valminud õppetöö raames!</p>
+	<p>See leht on valminud õppetöö raames</p>
 	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a href="?logout=1">välja</a>!</p>
 	<p>Tagasi <a href="home.php">avalehele</a>!</p>
 	<hr>

@@ -37,8 +37,39 @@ function saveNews($newsTitle, $newsContent)
     return $response;
 }
 
-function readNews($limit)
-{
+function readNewsPage($limit){
+    if($limit == null){
+        $limit = 1;
+    }
+    $response = null;
+    //loon andmebaasiühenduse
+    $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+    //$stmt = $conn->prepare("SELECT title, content FROM vr20_news");
+    $stmt = $conn->prepare("SELECT title, content, created FROM vr20_news WHERE deleted IS NULL ORDER BY id DESC LIMIT ?");
+    echo $conn->error;
+    $stmt->bind_param("i", $limit);
+    $stmt->bind_result($titleFromDB, $contentFromDB, $createdFromDB);
+    $stmt->execute();
+    //if($stmt->fetch())
+    //<h2>uudisepealkiri</h2>
+    //<p>uudis</p>
+    while ($stmt->fetch()){
+        $addedDate = new DateTime($createdFromDB);
+        $response .= "<h3>" .$titleFromDB ."</h3> \n";
+        $response .= "<p>Lisatud: " .$addedDate->format("d.m.Y H:i:s") ."</p> \n";
+        $response .= "<p>" .$contentFromDB ."</p> \n";
+    }
+    if($response == null){
+        $response = "<p>Kahjuks uudised puuduvad!</p> \n";
+    }
+    
+    //sulgen päringu ja andmebaasiühenduse
+    $stmt->close();
+    $conn->close();
+    return $response;
+}
+function readNews(){
+
     $response = null;
     //andmebaasi ühenduse loomine
     $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
@@ -55,9 +86,9 @@ function readNews($limit)
 
         $response .= '<div class="jumbotron">';
         $response .= '<h3 class="display-4">' . $titleFromDB . '</h3>'; //uudise pealkiri
-        $response .= '<p class="lead">' . $dateFromDB . '</p>'; //uudise avaldamise kuupäev
+        $response .= '<p class="lead">Lisatud:' . $dateFromDB->format("d.m.Y H:i:s") . '</p>'; //uudise avaldamise kuupäev
         $response .= '<hr class="my-4">'; 
-        $response .= '<p>' . $contentFromDB . '</p>'; //uudise sisu
+        $response .= '<p>' . $contentFromDB  . '</p> \n'; //uudise sisu
         $response .= '<p class="lead">';
         $response .= '<form method="post" action=""><button class="btn btn-warning" type="submit" name="newsDelBtn" value="' . $idFromDB . '">Kustuta</button></from>'; //kustuta nupp HTMLis ja selleks on vaja luu vorm, sest muidu ei saa seda nõnda lisada
         $response .= '</p>';

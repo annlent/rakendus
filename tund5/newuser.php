@@ -2,8 +2,9 @@
   require("../../../../configuration.php");
   require("fnc_user.php");
     
-  $notice = null; //kas läks hästi v halvasti
-  $name = null; //jätab meelde nime
+     
+  $notice = null;
+  $name = null;
   $surname = null;
   $email = null;
   $gender = null;
@@ -11,9 +12,9 @@
   $birthYear = null;
   $birthDay = null;
   $birthDate = null;
-  $monthNamesET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni","juuli", "august", "september", "oktoober", "november", "detsember"]; //siin kõik kuunimed massiivina
+  $monthNamesET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni","juuli", "august", "september", "oktoober", "november", "detsember"];
   
-  //muutujad võimalike veateadetega, juhuks kui kasutaja on teinud vea ja siis saab veateate
+  //muutujad võimalike veateadetega
   $nameError = null;
   $surnameError = null;
   $birthMonthError = null;
@@ -29,7 +30,7 @@
   if(isset($_POST["submitUserData"])){
 	//kui on sisestatud nimi
 	if(isset($_POST["firstName"]) and !empty($_POST["firstName"])){
-		$name = test_input($_POST["firstName"]); //et siin ei saaks lisada mingeid scripte
+		$name = test_input($_POST["firstName"]);
 	} else {
 		$nameError = "Palun sisestage eesnimi!";
 	} //eesnime kontrolli lõpp
@@ -66,19 +67,21 @@
 	  }
 	  
 	  //vaja ka kuupäeva valiidsust kontrollida ja kuupäev kokku panna
-	  if (empty($birthMonthError) and empty($birthYearError) and empty($birthDayError)) {
-		  if(checkdate($birthMonth, $birthDay, $birthYear))
-		  $tempDate = new DateTime($birthYear ."-" .$birthMonth ."-" .$birthDay);
-		  $birthDate = $tempDate->format("Y-m-d");
-	  } else {
-		  $birthDateError = "Valitud kuupäeva ei ole olemas! ";
+	  if(empty($birthMonthError) and empty($birthYearError) and empty($birthDayError)){
+		  if(checkdate($birthMonth, $birthDay, $birthYear)){
+			  $tempDate = new DateTime($birthYear ."-" .$birthMonth ."-" . $birthDay);
+			  $birthDate = $tempDate->format("Y-m-d");
+		  } else {
+			  $birthDateError = "Valitud kuupäev on vigane!";
+		  }
 	  }
+	  
 	//email ehk kasutajatunnus
 	
 	  if (isset($_POST["email"]) and !empty($_POST["email"])){
 		$email = test_input($_POST["email"]);
 		$email = filter_var($email, FILTER_VALIDATE_EMAIL);
-		if ($email === false) { //miks siin kolm võrdusmärki on?
+		if ($email === false) {
 			$emailError = "Palun sisesta korrektne e-postiaadress!";
 		}
 	  } else {
@@ -90,7 +93,7 @@
 	  if (!isset($_POST["password"]) or empty($_POST["password"])){
 		$passwordError = "Palun sisesta salasõna!";
 	  } else {
-		  if(strlen($_POST["password"]) < 8){ //stringipikkus peab olema vähemalt 8
+		  if(strlen($_POST["password"]) < 8){
 			  $passwordError = "Liiga lühike salasõna (sisestasite ainult " .strlen($_POST["password"]) ." märki).";
 		  }
 	  }
@@ -107,21 +110,24 @@
 	//Kui kõik on korras, salvestame
 	if(empty($nameError) and empty($surnameError) and empty($birthMonthError) and empty($birthYearError) and empty($birthDayError) and empty($birthDateError) and empty($genderError) and empty($emailError) and empty($passwordError) and empty($confirmpasswordError)){
 		$notice = signUp($name, $surname, $email, $gender, $birthDate, $_POST["password"]);
-		if ($notice == "ok") {
-			$notice = "Uus kasutaja on loodud! ";
+		if($notice == "ok"){
+			$notice = "Uus kasutaja on loodud!";
+			$name = null;
+			$surname = null;
+			$email = null;
+			$gender = null;
+			$birthMonth = null;
+			$birthYear = null;
+			$birthDay = null;
+			$birthDate = null;
 		} else {
-			$notice = "Uue kasutaja salvestamisel tekkis tehniline tõrge! " .$notice;
+			$notice = "Uue kasutaja salvestamisel tekkis tehniline tõrge: " .$notice;
 		}
-	}//kui kõik korras, siis kõik errorid on tühjad
+	}//kui kõik korras
 	
   } //kui on nuppu vajutatud
   
-  function test_input($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-	}
+  
 ?>
 
 <!DOCTYPE html>
@@ -132,17 +138,17 @@
   </head>
   <body>
     <h1>Loo endale kasutajakonto</h1>
-	<p>See leht on valminud õppetöö raames!</p>
+	<p>See leht on valminud õppetöö raames</p>
 	<hr>
 	
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 	  <label>Eesnimi:</label><br>
-	  <input name="firstName" type="text" value="<?php echo $name; ?>"><span><?php echo $nameError; ?></span><br> <!-- siin siis defineeritakse muutuja name, millele alguses antakse väärtus null, inputi järel on ka vastav error - juhuks kui midagi läheb vussi-->
+	  <input name="firstName" type="text" value="<?php echo $name; ?>"><span><?php echo $nameError; ?></span><br>
       <label>Perekonnanimi:</label><br>
 	  <input name="surName" type="text" value="<?php echo $surname; ?>"><span><?php echo $surnameError; ?></span>
 	  <br>
 	  
-	  <input type="radio" name="gender" value="2" <?php if($gender == "2"){		echo " checked";} ?>><label>Naine</label> <!--radio nupp on musta täpikesega nupp ja need on üksteist välistavad nupukesed (rahvusvaheliselt kokku lepitud et mees =1 ja naine =2)-->
+	  <input type="radio" name="gender" value="2" <?php if($gender == "2"){		echo " checked";} ?>><label>Naine</label>
 	  <input type="radio" name="gender" value="1" <?php if($gender == "1"){		echo " checked";} ?>><label>Mees</label><br>
 	  <span><?php echo $genderError; ?></span>
 	  <br>
@@ -150,11 +156,11 @@
 	  <label>Sünnikuupäev: </label>
 	  <?php
 	    //sünnikuupäev
-	    echo '<select name="birthDay">' ."\n"; //html rippmenüüelement on select, tehtud php-ga
-		echo "\t \t" .'<option value="" selected disabled>päev</option>' ."\n"; //esimesele optionile ei anta väärtust (disabled)
-		for($i = 1; $i < 32; $i ++){ //väärtus peab olema vahemikus 1-31
+	    echo '<select name="birthDay">' ."\n";
+		echo "\t \t" .'<option value="" selected disabled>päev</option>' ."\n";
+		for($i = 1; $i < 32; $i ++){
 			echo "\t \t" .'<option value="' .$i .'"';
-			if($i == $birthDay){ //selle vajadusest ei saa täpselt aru
+			if($i == $birthDay){
 				echo " selected";
 			}
 			echo ">" .$i ."</option> \n";
@@ -178,7 +184,7 @@
 	  <?php
 	    echo '<select name="birthYear">' ."\n";
 		echo "\t \t" .'<option value="" selected disabled>aasta</option>' ."\n";
-		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){ //käesoleva aatast on lahutatud 15, st veeb on mõeldud täiskasvanutele ja kuni 110 astaseni
+		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){
 			echo "\t \t" .'<option value="' .$i .'"';
 			if ($i == $birthYear){
 				echo " selected ";
@@ -194,7 +200,7 @@
 	  <label>E-mail (kasutajatunnus):</label><br>
 	  <input type="email" name="email" value="<?php echo $email; ?>"><span><?php echo $emailError; ?></span><br>
 	  <label>Salasõna (min 8 tähemärki):</label><br>
-	  <input name="password" type="password"><span><?php echo $passwordError; ?></span><br> <!--type password näitab seda täppidena-->
+	  <input name="password" type="password"><span><?php echo $passwordError; ?></span><br>
 	  <label>Korrake salasõna:</label><br>
 	  <input name="confirmpassword" type="password"><span><?php echo $confirmpasswordError; ?></span><br>
 	  <input name="submitUserData" type="submit" value="Loo kasutaja"><span><?php echo $notice; ?></span>

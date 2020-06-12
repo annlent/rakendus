@@ -30,9 +30,9 @@
 	<title>Veebirakendused ja nende loomine 2020</title>
 </head>
 <body>
-	<h1>Meie äge koduleht</h1>
-	<p>Tere! <?php echo $_SESSION["userFirstName"] . " " .$_SESSION["userLastName"]; ?></p>
-	<p>See leht on valminud õppetöö raames!</p>
+	<h1>Mingi kodukas</h1>
+	<p>Ahoi, meremees! Aa, ei. Tere, <?php echo $_SESSION["userFirstName"] . " " .$_SESSION["userLastName"]; ?></p>
+	<p>See leht on valminud õppetöö raames</p>
 	<p>Logi <a href="?logout=1">välja</a>!</p>
     <hr>
 	<h2>Meie süsteemis leiad</h2>

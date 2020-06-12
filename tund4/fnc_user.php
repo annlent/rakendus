@@ -2,20 +2,31 @@
 
 //sessiooni käivitamine või kasutamine
 //session_start();
-function test_input($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-}
+// function test_input($data) {
+// 		$data = trim($data);
+// 		$data = stripslashes($data);
+// 		$data = htmlspecialchars($data);
+// 		return $data;
+// }
 
-function signUp($name, $surname, $email, $gender, $birthDate, $password){
-	$notice = null;
-	$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-	$stmt = $conn->prepare("INSERT INTO vr20_users (firstname, lastname, birthdate, gender, email, password) VALUES (?, ?, ?, ?, ?, ?)");
-	echo $conn->error;
-	
-	//krüpteerin parooli
+function signUp($name, $surname, $email, $gender, $birthDate, $password) {
+    $notice = null;
+    $conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+    $stmt = $conn ->prepare("INSERT INTO vr20_users (firstname, lastname, birthdate, gender, email, password) VALUES(?,?,?,?,?,?)"); //nüüd on ühendus ja valmistan ette andmebaasi ühenduse käsuga prepare; järjekord ei ole oluline, väärtused tuleb panna ? 
+	echo $conn ->error; //juhuks kui midagi on valesti läinud, siis annaks ikka errorit ka
+
+	if ($stmt->fetch()) {
+        $notice = "Selline e-postiaadress on juba kasutusel!";
+        $stmt->close();
+        $conn->close();
+
+        return $notice;
+    } else {
+        $stmt->close();
+        $stmt = $conn->prepare("INSERT INTO vr20_users (firstname, lastname, birthdate, gender, email, password) VALUES (?, ?, ?, ?, ?, ?)");
+        echo $conn->error;
+
+    //krüpteerin parooli
 	$options = ["cost" => 12, "salt" => substr(sha1(rand()), 0, 22)];
 	$pwdhash = password_hash($password, PASSWORD_BCRYPT, $options);
 	
@@ -29,7 +40,8 @@ function signUp($name, $surname, $email, $gender, $birthDate, $password){
 	
 	$stmt->close();
 	$conn->close();
-	return $notice;
+    return $notice;
+}
 }
 
 function signIn($email, $password){
@@ -60,4 +72,5 @@ function signIn($email, $password){
 	$stmt->close();
 	$conn->close();
 	return $notice;
+
 }

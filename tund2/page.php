@@ -1,8 +1,8 @@
 <?php
 
-$myname 		= 'Annika Lento';
+$myname 		= 'Annika Lentso';
 $fulltimenow	= date("d.m.Y H:i:s");
-$timeHTML		= "<p>Lehe avamise hetkel oli aeg: <strong> .$fulltimenow .</strong></p>";
+$timeHTML		= "<p>Lehe avamise hetkel oli aeg: <strong> $fulltimenow </strong></p>";
 $hourNow		= date("H");
 $partOfDay		= "hägune aeg";
 
@@ -10,7 +10,11 @@ if ($hourNow < 10) {
 	$partOfDay = 'hommik';
 } elseif ($hourNow >= 10 and $hourNow < 18) {
 	$partOfDay = 'aeg toimetada';
-}
+} 
+elseif ($hourNow > 18 ) {
+	$partOfDay = 'aeg puhata';
+} 
+
 
 $partOfDayHTML = "<p>Käes on " .$partOfDay ."!</p> \n";
 
@@ -41,10 +45,10 @@ if($today < $semesterStart) {
 }
 
 // pildid
-$picsDir = "../../pics/";
-$photoTypesAllow = ["image/jpeg", "image/png"];
-$allFiles = array_slice(scandir($picsDir), 2); //scandir teeb massiivi, 
-$photoList = [];
+$picsDir = "../../pics/"; //määrame piltide asukoha
+$photoTypesAllow = ["image/jpeg", "image/png"]; //määrame lubatava pildi formaadi
+$allFiles = array_slice(scandir($picsDir), 2); //scandir teeb massiivi, array_slice on sisseehitet funktsioon ning eraldab mingi osa massiivist välja
+$photoList = []; //loome fotode massiivi
 
 foreach ($allFiles as $file) {
 	$fileInfo = getimagesize($picsDir . $file);
@@ -54,6 +58,18 @@ foreach ($allFiles as $file) {
 }
 
 $photoCount = count($photoList);
+	$photosToShow = [];
+	$photoCountLimit = 3;
+	if($photoCount < 3) {
+		$photoCountLimit = $photoCount;
+	}
+for ($i = 0; $i < $photoCountLimit; $i ++) {
+	do {
+		$photoNum =mt_rand(0, ($photoCount -1));
+	}
+	while (in_array($photoNum, $photosToShow) == true);
+	array_push($photosToShow, $photoNum);
+}
 
 if($photoCount!=0){
 	$randomIMGList = [];
@@ -71,6 +87,28 @@ if($photoCount!=0){
 	$randomImgHTML = '<p>Ühtegi pilti ei ole! </p>';
 }
 
+// //kellaajast sõltuv veebilehe värv
+// $bgColor = "#FFFFF0";
+// $txtColor = "#0000CD";
+// if($hourNow > 21 or $hourNow < 7){
+// 	$bgColor = "#4B0082";
+// 	$txtColor = "#FFFFF0";
+// } elseif ($hourNow >= 7 and $hourNow < 12){
+// 	$bgColor = "#FFE4E1";
+// 	$txtColor = "#191970";
+// } elseif ($hourNow >= 12 and $hourNow < 18){
+// 	$bgColor= "#FFE4E1";
+// 	$txtColor = "#800000";
+// } else {
+// 	$bgColor = "#999999";
+// 	$txtColor = "#000033";
+// }
+// $styleHTML = "<style> \n .timeBackground { \n background-color: ";
+// $styleHTML .= $bgColor;
+// $styleHTML .= "; \n color: ";
+// $styleHTML .= $txtColor;
+// $styleHTML .= "; \n } \n </style> \n";
+
 ?>
 
 <!DOCTYPE html>
@@ -80,22 +118,34 @@ if($photoCount!=0){
 	<meta charset="utf-8">
 	<title>Veebirakendused ja nende loomine 2020</title>
 </head>
-<style>
+ <style>
 	.morning {
-		background-color: lightpink;
+		background-color: lightgoldenrodyellow;
+		text-align:center;
+		color: darkblue;
 	}
 
 	.night {
-		background-color: lightblue;
+		background-color: darkblue;
+		text-align:center;
+		color: lightgoldenrodyellow;
 	}
-</style>
+	
+	
+</style> 
 <body class=<?php echo $bgclass; ?>>
-	<h1><?php echo $myname; ?></h1>
-	<p>See leht on valminud! õppetöö raames!</p>
-	<?php
+
+	<h1> <?php echo $myname; ?></h1>
+	<h2>See leht on valminud õppetöö raames</h2>
+
+	<h3><?php
 	echo $timeHTML . $partOfDayHTML . $semesterProgressHTML . $randomImgHTML;
 
-	?>
+	?></h3>
 </body>
-
+<footer>
+<div class="container text-center darkcolor" id="footer" style="margin-bottom:0">
+<p>copyright ©Annika 2020</p>
+</div>
+</footer>
 </html>

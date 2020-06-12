@@ -1,5 +1,5 @@
 <?php
-  require("../../../configuration.php");
+  require("../../../../configuration.php");
     
   $notice = null;
   $name = null;
@@ -122,6 +122,30 @@
     <h1>Loo endale kasutajakonto</h1>
 	<p>See leht on valminud õppetöö raames!</p>
 	<hr>
+	<style>
+	body {
+  	background-color: lightgoldenrodyellow;
+	}
+	h1, h3, title {
+		background-color: lightgoldenrodyellow;
+		text-align:center;
+		color: darkblue;
+	}
+	h2 {
+		text-align:center;
+		color: green;
+	}
+
+		
+	.footer {
+		text-align: center;
+		color:green;
+	}
+
+
+
+	
+</style>
 	
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 	  <label>Eesnimi:</label><br>
@@ -185,10 +209,18 @@
 	  <input name="password" type="password"><span><?php echo $passwordError; ?></span><br>
 	  <label>Korrake salasõna:</label><br>
 	  <input name="confirmpassword" type="password"><span><?php echo $confirmpasswordError; ?></span><br>
+	  <div class="checkbox">
+   	 	<label><input type="checkbox"> Mäleta mind!</label>
+  		</div>
 	  <input name="submitUserData" type="submit" value="Loo kasutaja"><span><?php echo $notice; ?></span>
 	</form>
 	<hr>
 	<p>Tagasi <a href="page.php">avalehele</a></p>
     <hr>
   </body>
+  <footer>
+<div class="container text-center darkcolor" id="footer" style="margin-bottom:0">
+<p>copyright ©Annika 2020</p>
+</div>
+</footer>
 </html>

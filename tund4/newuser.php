@@ -1,5 +1,5 @@
 <?php
-  require("../../../configuration.php");
+  require("../../../../configuration.php");
   require("fnc_user.php");
     
   $notice = null;
@@ -71,7 +71,7 @@
 			  $tempDate = new DateTime($birthYear ."-" .$birthMonth ."-" . $birthDay);
 			  $birthDate = $tempDate->format("Y-m-d");
 		  } else {
-			  $birthDateError = "Valitud kuupäev on vigane!";
+			  $birthDateError = "Valitud kuupäeva ei ole olemas!";
 		  }
 	  }
 	  
@@ -125,7 +125,12 @@
 	}//kui kõik korras
 	
   } //kui on nuppu vajutatud
-  
+  function test_input($data) {
+	$data = trim($data);
+	$data = stripslashes($data);
+	$data = htmlspecialchars($data);
+	return $data;
+}
   
 ?>
 
@@ -137,29 +142,29 @@
   </head>
   <body>
     <h1>Loo endale kasutajakonto</h1>
-	<p>See leht on valminud õppetöö raames!</p>
+	<p>See leht on valminud õppetöö raames, endiselt</p>
 	<hr>
 	
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 	  <label>Eesnimi:</label><br>
-	  <input name="firstName" type="text" value="<?php echo $name; ?>"><span><?php echo $nameError; ?></span><br>
+	  <input name="firstName" type="text" value="<?php echo $name; ?>"><span><?php echo $nameError; ?></span><br> <!-- siin siis defineeritakse muutuja name, millele alguses antakse väärtus null, inputi järel on ka vastav error - juhuks kui midagi läheb vussi-->
       <label>Perekonnanimi:</label><br>
 	  <input name="surName" type="text" value="<?php echo $surname; ?>"><span><?php echo $surnameError; ?></span>
 	  <br>
 	  
-	  <input type="radio" name="gender" value="2" <?php if($gender == "2"){		echo " checked";} ?>><label>Naine</label>
+	  <input type="radio" name="gender" value="2" <?php if($gender == "2"){		echo " checked";} ?>><label>Naine</label> <!--radio nupp on musta täpikesega nupp ja need on üksteist välistavad nupukesed (rahvusvaheliselt kokku lepitud et mees =1 ja naine =2)-->
 	  <input type="radio" name="gender" value="1" <?php if($gender == "1"){		echo " checked";} ?>><label>Mees</label><br>
 	  <span><?php echo $genderError; ?></span>
 	  <br>
-	  
+
 	  <label>Sünnikuupäev: </label>
 	  <?php
 	    //sünnikuupäev
-	    echo '<select name="birthDay">' ."\n";
-		echo "\t \t" .'<option value="" selected disabled>päev</option>' ."\n";
-		for($i = 1; $i < 32; $i ++){
+	    echo '<select name="birthDay">' ."\n"; //html rippmenüüelement on select, tehtud php-ga
+		echo "\t \t" .'<option value="" selected disabled>päev</option>' ."\n"; //esimesele optionile ei anta väärtust (disabled)
+		for($i = 1; $i < 32; $i ++){ //väärtus peab olema vahemikus 1-31
 			echo "\t \t" .'<option value="' .$i .'"';
-			if($i == $birthDay){
+			if($i == $birthDay){ //selle vajadusest ei saa täpselt aru
 				echo " selected";
 			}
 			echo ">" .$i ."</option> \n";
@@ -183,7 +188,7 @@
 	  <?php
 	    echo '<select name="birthYear">' ."\n";
 		echo "\t \t" .'<option value="" selected disabled>aasta</option>' ."\n";
-		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){
+		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){ //käesolevast aatast on lahutatud 15, st veeb on mõeldud täiskasvanutele ja kuni 110 astaseni
 			echo "\t \t" .'<option value="' .$i .'"';
 			if ($i == $birthYear){
 				echo " selected ";
@@ -199,7 +204,7 @@
 	  <label>E-mail (kasutajatunnus):</label><br>
 	  <input type="email" name="email" value="<?php echo $email; ?>"><span><?php echo $emailError; ?></span><br>
 	  <label>Salasõna (min 8 tähemärki):</label><br>
-	  <input name="password" type="password"><span><?php echo $passwordError; ?></span><br>
+	  <input name="password" type="password"><span><?php echo $passwordError; ?></span><br> <!--type password näitab seda täppidena-->
 	  <label>Korrake salasõna:</label><br>
 	  <input name="confirmpassword" type="password"><span><?php echo $confirmpasswordError; ?></span><br>
 	  <input name="submitUserData" type="submit" value="Loo kasutaja"><span><?php echo $notice; ?></span>

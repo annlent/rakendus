@@ -2,42 +2,26 @@
 	require("../../../../configuration.php");
 	require("fnc_news.php");
 	
-    $newsHTML = readNews(1); //$limit väärtus tuleb siin ette anda (funktsioon limit tuleb limiteerida)
-    if (isset($_POST["newsDelBtn"])) {
-        deleteNews($_POST["newsDelBtn"]);
-        $newsHTML = readNews($_POST["limitSet"]);
+$newsHTML = readNews(1); //$limit väärtus tuleb siin ette anda (funktsioon limit tuleb limiteerida)
+   
+if (isset($_POST["newsDelBtn"])) {
+    deleteNews($_POST["newsDelBtn"]);
+    $newsHTML = readNews($_POST["limitSet"]);
     }
     
-    if (isset($_POST["limitSet"])) {
+if (isset($_POST["limitSet"])) {
     
         $newsHTML = readNews($_POST["limitSet"]);
     }
 
 ?>
-<!DOCTYPE html>
-<html lang="et">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Veebirakendused ja nende loomine 2020</title>
-</head>
-<body>
-	<h1>Uudised</h1>
-	<p>See leht on valminud õppetöö raames!</p>
-    <div>
-		<?php echo $newsHTML; ?>
-	</div>
-	<hr>
-</body>
-</html>
-
-
 
 <!DOCTYPE html>
 <html lang="et">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veebirakendused ja nende loomine 2020</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"><!-- see on siis bootstrapi kujundus, stiil-->
 
@@ -58,10 +42,10 @@
                 <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <label for="limit"></label>
                     <?php
-                    $aDropd = array("1", "5", "10", "100");
+                    $aDropd = array("1", "3", "8", "20");
                     echo '<div class="form-group col-md-4">
-                    <label for="limit">Vali, mitu uudist soovid kuvada:</label>  
-                    <select id="limit" class="form-control" onchange="this.form.submit();" name="limitSet">';
+                    <label for = "limit"> Vali, mitu uudist soovid kuvada: </label>  
+                    <select id="limit" class = "form-control" onchange="this.form.submit();" name="limitSet">';
                     foreach ($aDropd as $sOption) {
                         $sSel = ($sOption == $_POST['limitSet']) ? "Selected='selected'" : "";
                         echo "<option   $sSel>$sOption</option>";

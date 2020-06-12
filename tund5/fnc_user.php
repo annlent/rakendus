@@ -2,12 +2,7 @@
 
 //sessiooni käivitamine või kasutamine
 //session_start();
-function test_input($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-}
+require("fnc_main.php");
 
 function signUp($name, $surname, $email, $gender, $birthDate, $password){
 	$notice = null;

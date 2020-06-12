@@ -48,11 +48,11 @@
 			//echo "Salvestame!";
 			$response = saveNews($newsTitle, $newsContent);
 			if($response == 1){
-				$newsError = "Uudis on salvestatud!";
+				$newsError = "Uudis on salvestet!";
 				$newsTitle = null;
 				$newsContent = null;
 			} else {
-				$newsError = "Uudise salvestamisel tekkis tõrge!";
+				$newsError = "Uudise salvestamisel tekkis viga!";
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 <?php
 	require("classes/Session.class.php");
 	SessionManager::sessionStart("rakendus", 0, "/~annika.lentso/", "tigu.hk.tlu.ee");
-	
+		
 	//kas pole sisseloginud
 	if(!isset($_SESSION["userid"])){
 		//jõuga avalehele
@@ -14,7 +14,7 @@
 		header("Location: page.php");
 	}
 	
-	require("../../../../configuration.php");
+	//require("../../../../configuration.php");
 	require("fnc_news.php");
 	//include
     //var_dump($_POST);
@@ -65,7 +65,7 @@
 </head>
 <body>
 	<h1>Uudise lisamine</h1>
-	<p>See leht on valminud õppetöö raames!</p>
+	<p>See leht on valminud õppetöö raames</p>
 	<p><?php echo $_SESSION["userFirstName"]. " " .$_SESSION["userLastName"] ."."; ?> Logi <a href="?logout=1">välja</a>!</p>
 	<p>Tagasi <a href="home.php">avalehele</a>!</p>
 	<hr>

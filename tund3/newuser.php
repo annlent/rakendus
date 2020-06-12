@@ -77,7 +77,7 @@
 	
 	  if (isset($_POST["email"]) and !empty($_POST["email"])){
 		$email = test_input($_POST["email"]);
-		$email = filter_var($email, FILTER_VALIDATE_EMAIL);
+		$email = filter_var($email, FILTER_VALIDATE_EMAIL); //siin kontrollib @ märk ja lisa (nt tlu.ee)
 		if ($email === false) { //miks siin kolm võrdusmärki on?
 			$emailError = "Palun sisesta korrektne e-postiaadress!";
 		}
@@ -107,8 +107,16 @@
 	//Kui kõik on korras, salvestame
 	if(empty($nameError) and empty($surnameError) and empty($birthMonthError) and empty($birthYearError) and empty($birthDayError) and empty($birthDateError) and empty($genderError) and empty($emailError) and empty($passwordError) and empty($confirmpasswordError)){
 		$notice = signUp($name, $surname, $email, $gender, $birthDate, $_POST["password"]);
-		if ($notice == "ok") {
+		if ($notice == "jaa") {
 			$notice = "Uus kasutaja on loodud! ";
+			$name = null;
+			$surname = null;
+			$email = null;
+			$gender = null;
+			$birthMonth = null;
+			$birthYear = null;
+			$birthDay = null;
+			$birthDate = null;
 		} else {
 			$notice = "Uue kasutaja salvestamisel tekkis tehniline tõrge! " .$notice;
 		}
@@ -132,7 +140,7 @@
   </head>
   <body>
     <h1>Loo endale kasutajakonto</h1>
-	<p>See leht on valminud õppetöö raames!</p>
+	<p>See leht on valminud õppetöö raames, endiselt!</p>
 	<hr>
 	
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
@@ -178,7 +186,7 @@
 	  <?php
 	    echo '<select name="birthYear">' ."\n";
 		echo "\t \t" .'<option value="" selected disabled>aasta</option>' ."\n";
-		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){ //käesoleva aatast on lahutatud 15, st veeb on mõeldud täiskasvanutele ja kuni 110 astaseni
+		for ($i = date("Y") - 15; $i >= date("Y") - 110; $i --){ //käesolevast aatast on lahutatud 15, st veeb on mõeldud täiskasvanutele ja kuni 110 astaseni
 			echo "\t \t" .'<option value="' .$i .'"';
 			if ($i == $birthYear){
 				echo " selected ";

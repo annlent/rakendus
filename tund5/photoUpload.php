@@ -1,7 +1,7 @@
 <?php
 	require("classes/Session.class.php");
-	SessionManager::sessionStart("vr20", 0, "/~andrus.rinde/", "tigu.hk.tlu.ee");
-	
+	SessionManager::sessionStart("rakendus", 0, "/~annika.lentso/", "tigu.hk.tlu.ee");
+		
 	//kas pole sisseloginud
 	if(!isset($_SESSION["userid"])){
 		//jõuga avalehele
@@ -24,7 +24,8 @@
 	//var_dump($_FILES);
 	
 	$originalPhotoDir = "../../uploadOriginalPhoto/";
-	$normalPhotoDir = "../../uploadNormalPhoto/";
+	$normalPhotoDir = "../../normalPhotoUpload/";
+	$thumbPhotoDir = "../../uploadThumbnail";
 	$error = null;
 	$notice = null;
 	$imageFileType = null;
@@ -83,10 +84,13 @@
 			} */
 			
 			//$myNewImage = resizePhoto($myTempImage, $maxWidth, $maxHeight);
-            $photoUp->resizePhoto($maxWidth, $maxHeight);
-            $photoUp->addWatermark("vr_watermark.png", 3, 10);
+			$photoUp->resizePhoto($maxWidth, $maxHeight);
 			
-			$result = saveImgToFile($photoUp->myNewImage, $normalPhotoDir .$fileName, $imageFileType);
+			//lisan vesimärgi
+			$photoUp->addWatermark("vr_watermark.png", 3, 10);
+			
+			//$result = saveImgToFile($photoUp->myNewImage, $normalPhotoDir .$fileName, $imageFileType);
+			$result = $photoUp->saveImgToFile($normalPhotoDir .$fileName);
 			if($result == 1) {
 				$notice = "Vähendatud pilt laeti üles! ";
 			} else {
@@ -98,7 +102,9 @@
 			//lõpetame vähendatud pildiga ja teeme thumbnail'i
 			/* imageDestroy($myNewImage);
 			$myNewImage = resizePhoto($myTempImage, $thumbSize, $thumbSize); */
-			$result = saveImgToFile($photoUp->myNewImage, $thumbPhotoDir .$fileName, $imageFileType);
+			//$result = saveImgToFile($photoUp->myNewImage, $thumbPhotoDir .$fileName, $imageFileType);
+			//enne: $result = saveImgToFile($photoUp->myNewImage, $thumbPhotoDir .$fileName, $imageFileType);
+			$result = $photoUp->saveImgToFile($thumbPhotoDir .$fileName);
 			if($result == 1) {
 				$notice = "Pisipilt laeti üles! ";
 			} else {
