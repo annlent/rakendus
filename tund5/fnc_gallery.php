@@ -130,9 +130,9 @@
 		return $notice;
 	}
 
-	function countPrivatePics(){
+	function countPrivatePics($privacy){
 		$notice = null;
-		$privacy = 3;
+		$privacy = 1;
 		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
 		$stmt = $conn->prepare("SELECT COUNT(id) FROM vr20_photos WHERE privacy<=? AND userid = ? AND deleted IS NULL");
 		echo $conn->error;
@@ -152,17 +152,19 @@
 		$finalHTML = "";
 		$html = "";
 		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
-		$stmt = $conn->prepare("SELECT filename, alttext FROM vr20_photos WHERE userid=? AND deleted IS NULL LIMIT ?,?");
+		//$stmt = $conn->prepare("SELECT filename, alttext FROM vr20_photos WHERE privacy<=? AND deleted IS NULL LIMIT ?,?");
+		$stmt = $conn->prepare("SELECT vr20_photos.id, vr20_users.firstname, vr20_users.lastname, vr20_photos.filename, vr20_photos.alttext, AVG(vr20_photoratings.rating) as AvgValue FROM vr20_photos JOIN vr20_users ON vr20_photos.userid = vr20_users.id LEFT JOIN vr20_photoratings ON vr20_photoratings.photoid = vr20_photos.id WHERE vr20_photos.privacy <= ? AND deleted IS NULL GROUP BY vr20_photos.id DESC LIMIT ?, ?");
 		echo $conn->error;
-		$stmt->bind_param("iii", $_SESSION["userid"], $skip, $limit);
-		$stmt->bind_result($filenameFromDb, $altFromDb);
+		$stmt->bind_param("iii", $privacy, $skip, $limit);
+		$stmt->bind_result($idFromDb, $firstnameFromDb, $lastnameFromDb, $filenameFromDb, $altFromDb, $ratingFromDb);
 		$stmt->execute();
 		while($stmt->fetch()){
 			$html .= '<div class="galleryelement">' ."\n";
 			//$html .= '<a href="' .$GLOBALS["normalPhotoDir"] .$filenameFromDb .'" target="_blank"><img src="' .$GLOBALS["thumbPhotoDir"] .$filenameFromDb .'" alt="'.$altFromDb .'" class="thumb"></a>' ."\n \t \t";
-			$html .= '<img src="' .$GLOBALS["thumbnailDir"] .$filenameFromDb .'" alt="'.$altFromDb .'" class="thumb" data-fn="' .$filenameFromDb .'">' ."\n \t \t";
+			$html .= '<img src="' .$GLOBALS["thumbnailDir"] .$filenameFromDb .'" alt="'.$altFromDb .'" class="thumb" data-fn="' .$filenameFromDb .'" data-id="' .$idFromDb .'">' ."\n \t \t";
+			$html .= "<p>" .$firstnameFromDb ." " .$lastnameFromDb ."</p> \n \t \t";
+			$html .= "<p> Hinne: " .round($ratingFromDb, 2) ."</p> \n";
 			$html .= "</div> \n \t \t";
-			
 		}
 		if($html != ""){
 			$finalHTML = $html;
@@ -206,6 +208,35 @@
 		$conn->close();
 		return $finalHTML;
 	}
-
+	function readAllMyPrivatePictureThumbsPage($page, $limit){
+		$privacy = 1;
+		$skip = ($page - 1) * $limit;
+		$finalHTML = "";
+		$html = "";
+		$conn = new mysqli($GLOBALS["serverHost"], $GLOBALS["serverUserName"], $GLOBALS["serverPassword"], $GLOBALS["database"]);
+		//$stmt = $conn->prepare("SELECT filename, alttext FROM vr20_photos WHERE privacy<=? AND deleted IS NULL LIMIT ?,?");
+		$stmt = $conn->prepare("SELECT vr20_photos.id, vr20_users.firstname, vr20_users.lastname, vr20_photos.filename, vr20_photos.alttext, AVG(vr20_photoratings.rating) as AvgValue FROM vr20_photos JOIN vr20_users ON vr20_photos.userid = vr20_users.id LEFT JOIN vr20_photoratings ON vr20_photoratings.photoid = vr20_photos.id WHERE vr20_photos.privacy <= ? AND deleted IS NULL GROUP BY vr20_photos.id DESC LIMIT ?, ?");
+		echo $conn->error;
+		$stmt->bind_param("iii", $privacy, $skip, $limit);
+		$stmt->bind_result($idFromDb, $firstnameFromDb, $lastnameFromDb, $filenameFromDb, $altFromDb, $ratingFromDb);
+		$stmt->execute();
+		while($stmt->fetch()){
+			$html .= '<div class="galleryelement">' ."\n";
+			//$html .= '<a href="' .$GLOBALS["normalPhotoDir"] .$filenameFromDb .'" target="_blank"><img src="' .$GLOBALS["thumbPhotoDir"] .$filenameFromDb .'" alt="'.$altFromDb .'" class="thumb"></a>' ."\n \t \t";
+			$html .= '<img src="' .$GLOBALS["thumbnailDir"] .$filenameFromDb .'" alt="'.$altFromDb .'" class="thumb" data-fn="' .$filenameFromDb .'" data-id="' .$idFromDb .'">' ."\n \t \t";
+			$html .= "<p>" .$firstnameFromDb ." " .$lastnameFromDb ."</p> \n \t \t";
+			$html .= "<p> Hinne: " .round($ratingFromDb, 2) ."</p> \n";
+			$html .= "</div> \n \t \t";
+		}
+		if($html != ""){
+			$finalHTML = $html;
+		} else {
+			$finalHTML = "<p>Kahjuks pilte pole!</p>";
+		}
+		
+		$stmt->close();
+		$conn->close();
+		return $finalHTML;
+	}
 
 

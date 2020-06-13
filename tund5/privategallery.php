@@ -32,7 +32,7 @@
         $page = $_GET["page"];
     }
 	
-	$privateThumbnails = readAllMyPictureThumbs($page, $limit);
+	$privateThumbnails = readAllMyPrivatePictureThumbsPage($page, $limit);
 ?>
 <!DOCTYPE html>
 <html lang="et">
@@ -46,6 +46,7 @@
 	<script src="javascript/modal.js" defer></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css?1">
+    <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0" style="color: #ffffff;">Omb'gi sjo mo galõrii</h1>
 </head>
 
 <body>
@@ -72,7 +73,7 @@
             </div>
         </div>
     </div>
-    <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0" style="color: #ffffff;">Omb'gi sjo mo galõrii</h1>
+   
     <?php
     if ($page > 1) {
         echo '<a href="?page=' . ($page - 1) . '">Eelmine</a> | ';

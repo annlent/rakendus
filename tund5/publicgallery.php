@@ -25,7 +25,7 @@ if (!isset($_GET["page"]) or $_GET["page"] < 1) {
     $page = $_GET["page"];
 }
 
-$publicPhotoThumb = readAllMyPictureThumbsPage( $page, $limit);
+$publicPhotoThumb = readAllMyPictureThumbsPage($page, $limit);
 
 ?>
 
@@ -67,10 +67,10 @@ $publicPhotoThumb = readAllMyPictureThumbsPage( $page, $limit);
             if ($page > 1) {
                 echo '<a href="?page=' . ($page - 1) . '">Eelmine</a> | ';
             } else {
-                echo "<span>Eelmine</span> | ";
+            echo "<span>Eelmine</span> | ";
             }
-            if ($page * $limit <= $picCount) {
-                echo '<a href="?page=' . ($page + 1) . '">Järgmine</a>';
+            if (($page + 1) * $limit <= $picCount) {
+            echo '<a href="?page=' . ($page + 1) . '">Järgmine</a>';
             } else {
                 echo "<span> Järgmine</span>";
             }
